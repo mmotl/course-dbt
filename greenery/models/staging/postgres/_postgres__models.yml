@@ -1,0 +1,14 @@
+version: 2
+
+models:
+  - name: stg_postgres__users
+    description: base table from users of greenery
+    columns: 
+      - name: user_guid
+        tests:
+          - unique
+          - not_null
+  - name: stg_postgres__promos
+    description: - base table of greenery promos
+  - name: stg_postgres__products
+    description: - base table of greenery products

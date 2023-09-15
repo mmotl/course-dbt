@@ -16,7 +16,7 @@ sources:
       error_after: {count: 48, period: hour}
 
     tables: # this is where we define table metadata (name, description, load timestamps)
-      - name: superheroes 
+      - name: superheroes
         loaded_at_field: created_at
         description: >
           Contains demographic information about each superhero

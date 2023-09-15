@@ -9,3 +9,6 @@ sources:
       - name: users
       - name: addresses
       - name: events
+      - name: products
+      - name: order_items
+      - name: promos
