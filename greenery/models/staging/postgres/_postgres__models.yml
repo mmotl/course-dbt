@@ -9,6 +9,14 @@ models:
           - unique
           - not_null
   - name: stg_postgres__promos
-    description: - base table of greenery promos
+    description: base table of greenery promos
   - name: stg_postgres__products
-    description: - base table of greenery products
+    description: base table of greenery products
+  - name: stg_postgres__order_items
+    description: base table of greenery order items
+  - name: stg_postgres__events
+    description: base table of greenery events
+  - name: stg_postgres__orders
+    description: base table of greenery orders
+  - name: stg_postgres__addresses
+    description: base table of greenery user addresses
