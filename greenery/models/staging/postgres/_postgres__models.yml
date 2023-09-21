@@ -10,8 +10,18 @@ models:
           - not_null
   - name: stg_postgres__promos
     description: base table of greenery promos
+    columns: 
+      - name: promo_id
+        tests:
+          - unique
+          - not_null
   - name: stg_postgres__products
     description: base table of greenery products
+      columns: 
+      - name: product_id
+        tests:
+          - unique
+          - not_null
   - name: stg_postgres__order_items
     description: base table of greenery order items
   - name: stg_postgres__events
