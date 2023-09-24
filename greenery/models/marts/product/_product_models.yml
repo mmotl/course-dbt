@@ -1,0 +1,10 @@
+version: 2
+
+models:
+  - name: fact_page_views
+    description: fact table of all page view events from greenery events data
+    columns: 
+      - name: event_id
+        tests:
+          - unique
+          - not_null

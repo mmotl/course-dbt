@@ -13,7 +13,6 @@ with source as (
     user_id as user_guid
     , first_name
     , last_name
-    , last_name
     , email
     , phone_number
     , created_at as created_at_utc
