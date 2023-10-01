@@ -10,7 +10,7 @@ select
     ,user_id
     ,event_type
     ,page_url
-    ,created_at
+    ,created_at as event_created_at_utc
     ,order_id
     ,product_id
 

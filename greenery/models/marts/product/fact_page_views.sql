@@ -1,42 +1,34 @@
- {{
-  config(
-    materialized='table',
-    unique_key = 'event_id'
-  )
-}}
+with session_times as (
+    select * from {{ ref('int_session_times')}}
+),
 
--- with source as (
---     select 
---             events.event_id as event_id
---             , events.created_at as created_at
---             , events.session_id as session_id
---             , events.product_id as product_id
---             , products.name as name
---             , products.price as price
---     from {{ref('stg_postgres__events')}} events
---     left join {{ref('stg_postgres__products')}} products
---             on events.product_id = products.product_id
--- )
+sessions as (
+    select * from {{ ref('int_sessions')}}
+),
 
-with source as (
-    select *
-    from {{ref('int_events_products')}} events
-)
+products as (
+    select * from {{ ref('stg_postgres__products')}}
+),
 
-,
-    renamed_recast as (
+final as (
     select 
-        event_id
-        , created_at as created_at_utc
-        , session_id
-    -- , user_id
-    -- , event_type
-    -- , page_url
-    -- , order_id
-        , product_id
-        , name as product_name
-        , price as product_price
-    from source
+        se.session_id
+        , se.user_id
+        , se.product_id
+        , p.product_name
+        , p.product_price
+        , se.page_views
+        , se.add_to_carts
+        , se.checkouts
+        , se.packages_shipped
+        , st.first_session_event_at_utc
+        , st.last_session_event_at_utc
+        , st.session_length_minutes
+    from sessions se
+    left join session_times st 
+        on se.session_id = st.session_id
+    left join products p
+        on se.product_id = p.product_id
 )
 
-select * from renamed_recast
+select * from final
