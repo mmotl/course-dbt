@@ -44,6 +44,13 @@ models:
 
   - name: stg_postgres__orders
     description: base table of greenery orders
+    columns:
+      - name: order_total
+        description: ""
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 1000
 
   - name: stg_postgres__addresses
     description: base table of greenery user addresses

@@ -1,34 +1,58 @@
-with session_times as (
-    select * from {{ ref('int_session_times')}}
-),
-
-sessions as (
-    select * from {{ ref('int_sessions')}}
-),
-
-products as (
-    select * from {{ ref('stg_postgres__products')}}
-),
-
-final as (
-    select 
-        se.session_id
-        , se.user_id
-        , se.product_id
-        , p.product_name
-        , p.product_price
-        , se.page_views
-        , se.add_to_carts
-        , se.checkouts
-        , se.packages_shipped
-        , st.first_session_event_at_utc
-        , st.last_session_event_at_utc
-        , st.session_length_minutes
-    from sessions se
-    left join session_times st 
-        on se.session_id = st.session_id
-    left join products p
-        on se.product_id = p.product_id
+with session_timing_agg as (
+    select *
+    from {{ref('int_session_timing')}}
 )
 
-select * from final
+{% set event_types =  dbt_utils.get_column_values(table=ref('stg_postgres__events'), column='event_type') %}
+
+
+{# note: % set event_types = [
+    'page_views',
+    'add_to_cart',
+    'checkout',
+    'package_shipped'
+] % #}
+
+
+select
+    e.session_id
+    , e.user_id
+    , coalesce(e.product_id, oi.product_id) as product_id
+    , session_started_at
+    , session_ended_at
+    {% for event_type in event_types %}
+    , {{sum_of('e.event_type', event_type)}} as {{event_type}}s
+    -- sum(case when e.event_type = '{{event_type}}' then 1 else 0 end) as {{event_type}}s
+    {% endfor %}    
+    -- , sum(case when e.event_type = 'page_view' then 1 else 0 end) as page_views
+    -- , sum(case when e.event_type = 'add_to_cart' then 1 else 0 end) as add_to_carts
+    -- , sum(case when e.event_type = 'checkout' then 1 else 0 end) as checkouts
+    -- , sum(case when e.event_type = 'package_shipped' then 1 else 0 end) as package_shipped
+    , datediff('minute', session_started_at, session_ended_at) as session_length_minutes
+from {{ref('stg_postgres__events')}} e
+left join {{ref('stg_postgres__order_items')}} oi
+        on oi.order_id = e.order_id
+left join session_timing_agg s
+        on s.session_id = e.session_id
+group by 1, 2, 3, 4, 5
+
+
+
+-- without macro
+-- select
+--     e.session_id
+--     , e.user_id
+--     , coalesce(e.product_id, oi.product_id) as product_id
+--     , session_started_at
+--     , session_ended_at
+--     , sum(case when e.event_type = 'page_view' then 1 else 0 end) as page_views
+--     , sum(case when e.event_type = 'add_to_cart' then 1 else 0 end) as add_to_carts
+--     , sum(case when e.event_type = 'checkout' then 1 else 0 end) as checkouts
+--     , sum(case when e.event_type = 'package_shipped' then 1 else 0 end) as package_shipped
+--     , datediff('minute', session_started_at, session_ended_at) as session_length_minutes
+-- from {{ref('stg_postgres__events')}} e
+-- left join {{ref('stg_postgres__order_items')}} oi
+--         on oi.order_id = e.order_id
+-- left join session_timing_agg s
+--         on s.session_id = e.session_id
+-- group by 1, 2, 3, 4, 5

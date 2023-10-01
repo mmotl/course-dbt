@@ -1,0 +1,16 @@
+version: 2
+
+macros:
+  - name: lbs_to_kgs
+    description: transforms value input from lbs to kgs metric
+  
+  - name: positive_values
+    description: test for positive values in a givencolumn
+  
+  - name: sum_of
+    description: agg function that sums a column with a specific value
+    arguments:
+      - name: col_name
+        description: target column name
+      - name: col_value
+        description: value of the target column
