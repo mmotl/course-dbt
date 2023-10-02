@@ -1,0 +1,5 @@
+version: 2
+
+models:
+  - name: report_conversion_rate_overall
+    description: calculates conversion rate of sessions overall
