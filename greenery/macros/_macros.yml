@@ -14,3 +14,6 @@ macros:
         description: target column name
       - name: col_value
         description: value of the target column
+  
+  - name: grant
+    description: set sql - takes role as an argument, grants usage and select to this role
