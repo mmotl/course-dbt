@@ -1,0 +1,7 @@
+version: 2
+
+models:
+  - name: int_events_products
+  - name: int_session_times
+  - name: int_session_timing
+  - name: int_sessions

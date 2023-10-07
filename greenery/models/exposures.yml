@@ -1,0 +1,40 @@
+version: 2
+
+exposures:
+
+  - name: product_funnel_overall
+    label: Product funnel of greenery data, overall granularity
+    type: reporting layer
+    # maturity: high
+    # url: https://___
+    description: >
+      Product funnel of greenery data, overall
+
+    depends_on:
+      - ref('fact_page_views')
+      - ref('int_session_timing')
+      - ref('stg_postgres__events')
+      - ref('stg_postgres__order_items')
+
+    owner:
+      name: Matthias Motl
+      email: matthias.motl@neuefische.de
+
+
+  - name: product_funnel_product
+    label: Product funnel of greenery data, product granularity
+    type: reporting layer
+    # maturity: high
+    # url: https://___
+    description: >
+      Product funnel of greenery data, product grain
+
+    depends_on:
+      - ref('fact_page_views')
+      - ref('int_session_timing')
+      - ref('stg_postgres__events')
+      - ref('stg_postgres__order_items')
+
+    owner:
+      name: Matthias Motl
+      email: matthias.motl@neuefische.de
