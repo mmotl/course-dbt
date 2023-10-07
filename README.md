@@ -2,6 +2,41 @@
 
 ### __Matthias' project__
 ---
+### week 4 questions/answers 
+#### Snapshot
+Inventory change from week 3 to 4:
+- changes were to see for:  
+Bamboo, Monstera, Philodendron, Pothos, String of pearls, ZZ Plant  
+by this query
+```sql 
+select *
+from products_snapshot
+where date_trunc(week, dbt_valid_to) = date_trunc(week, current_date)
+order by name
+```
+Items that went out of stock:  
+Pothos and String of pearls
+```sql
+select *
+from products_snapshot
+where product_id in (select product_id
+from products_snapshot
+group by 1
+having count(1) > 1) and inventory = 0
+order by product_id, dbt_valid_from;
+```
+#### Modeling
+The product funnel overall looks like this:
+| PAGE_VIEWS | ADD_TO_CARTS | CHECKOUTS |
+|------------|--------------|-----------|
+|    578     |     467      |   361     |  
+
+So, the percentage drop from PAGE_VIEWS to ADD_TO_CARTS is approximately 19.21%, and the percentage drop from ADD_TO_CARTS to CHECKOUTS is approximately 22.69%, making the second step the largest drop off.
+
+I build two reporting layer models for this,
+one on overall aggregation and one on product level grain.  
+I exemplarily tried to document them in the exposure ```product_funnel```.
+
 ### week 3 questions/answers 
 - overall conversion rate:  
     - 0.624567  
